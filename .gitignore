@@ -1,0 +1,74 @@
+# 의존성 및 런타임 환경
+node_modules/
+package-lock.json
+
+# 4중 방어벽: 보안 및 인증 정보 (절대 커밋 금지)
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+.toss_token.json
+
+# 브라우저 프로필 및 세션 쿠키
+.threads_chrome_profile/
+threads_profile/
+storage_state.json
+
+# 실운영 데이터 및 사용자 기록 (로컬 보존, Git 제외)
+cards.json
+!cards.sample.json
+comments_history.json
+!comments_history.sample.json
+daily_stats.json
+!daily_stats.sample.json
+persona.json
+!persona.sample.json
+content_vault.json
+!content_vault.sample.json
+
+# 로그 및 데이터베이스 파일
+*.log
+npm-debug.log*
+yarn-debug.log*
+*.db
+*.sqlite
+system_logs.db*
+
+# 가이드 에셋 및 내부 스크린샷 (GitHub 노출 차단)
+guide_assets/
+assets/
+docs/guides/
+docs/reports/
+
+# 임시 디버그 스크린샷 및 캐시
+debug_*.png
+test_*.png
+search_*.png
+my_*.png
+published_verify.png
+comment_success_final.png
+console_db_*.png
+trend_*.png
+_tmp_*
+
+# OS 및 에디터 임시 파일
+.DS_Store
+Thumbs.db
+.idea/
+.omc/
+.vscode/
+
+# 업로드 및 임시 산출물
+uploads/
+drafts/
+trends_cache.json
+content_vault.json.*.bak
+scratch/
+!scratch/.gitkeep
+manual_queue/
+
+.publish_attempts.json*
+deploy.tgz
+.playwright-mcp/
+.commandcode/

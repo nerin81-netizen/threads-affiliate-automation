@@ -1,0 +1,24 @@
+{
+  "follow": {
+    "targetCount": 20,
+    "keywords": ["#스팔", "#맞팔", "#선팔하면맞팔", "#소통환영", "#스레드맞팔"],
+    "minDelaySeconds": 4,
+    "maxDelaySeconds": 8,
+    "filter": "recent"
+  },
+  "post": {
+    "source": "best",
+    "itemRank": 1,
+    "bodyTemplate": "자취생 & 프로절약러 주목... 이건 안 쟁여두면 손해라 공유해요 🫢\n\n지금 토스에서 [{title}]\n역대급 특가로 {price}원에 풀렸네요!\n\n평소 눈여겨보셨거나 쟁여두실 분들은 품절되기 전에 꼭 챙겨두세요 🔥\n\n🔗 구매 좌표: {link}\n\n* 토스 제휴 활동의 일환으로 일정 수수료를 지급받을 수 있습니다.",
+    "commentTemplate": "",
+    "linkPosition": "body"
+  },
+  "browser": {
+    "headless": false
+  },
+  "scheduler": {
+    "enabled": false,
+    "intervalHours": 3,
+    "runMode": "all"
+  }
+}
