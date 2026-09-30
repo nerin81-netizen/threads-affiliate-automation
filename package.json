@@ -1,0 +1,27 @@
+{
+  "name": "threads-affiliate-automation",
+  "version": "1.5.3",
+  "description": "스레드(Threads) 맞팔 늘리기 및 토스 핫딜 제휴링크 자동 포스팅 봇",
+  "main": "scripts/menu.mjs",
+  "type": "module",
+  "scripts": {
+    "start": "node server.mjs",
+    "web": "node server.mjs",
+    "cli": "node scripts/menu.mjs",
+    "grow": "node scripts/threads_bot.mjs --mode=grow",
+    "post": "node scripts/threads_bot.mjs --mode=post",
+    "all": "node scripts/threads_bot.mjs --mode=all",
+    "test:publish-safety": "node scripts/test_publish_safety.mjs",
+    "test:publish-guard": "node scripts/test_publish_guard.mjs",
+    "test:content-diversity": "node scripts/test_content_diversity.mjs",
+    "test:rapport-replies": "node scripts/test_rapport_reply_service.mjs",
+    "test:dashboard-security": "node scripts/test_dashboard_security.mjs"
+  },
+  "dependencies": {
+    "@azure/storage-blob": "^12.33.0",
+    "dotenv": "^16.4.5",
+    "pg": "^8.23.0",
+    "playwright": "^1.42.0",
+    "threads-api": "^1.6.3"
+  }
+}

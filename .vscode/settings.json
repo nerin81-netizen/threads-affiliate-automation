@@ -1,0 +1,11 @@
+{
+  "liveServer.settings.port": 5500,
+  "liveServer.settings.proxy": {
+    "enable": true,
+    "baseUri": "/",
+    "proxyUri": "http://localhost:3500"
+  },
+  "fiveServer.proxy": {
+    "/": "http://localhost:3500"
+  }
+}

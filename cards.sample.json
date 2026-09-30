@@ -1,0 +1,20 @@
+[
+  {
+    "id": "card_sample_001",
+    "itemId": 10001,
+    "rank": 1,
+    "title": "샘플 특가 상품 안내",
+    "price": 10000,
+    "originPrice": 15000,
+    "discountRate": 33,
+    "imageUrl": "",
+    "shortUrl": "https://example.com/share-link",
+    "style": "비밀정보_내부자형",
+    "tag": "🤫 아는사람만 아는",
+    "postBody": "알고리즘 타고 아는 사람들만 조용히 챙겨두는 꿀템 공유합니다!\n\n현재 특가로 풀렸네요 🔥\n💬 상세 좌표는 첫 번째 댓글에 남겨둘게요 👇",
+    "firstComment": "🛒 [샘플 특가 상품 안내]\n특가 좌표: https://example.com/share-link\n\n* 제휴 활동의 일환으로 일정 수수료를 지급받을 수 있습니다.",
+    "status": "READY",
+    "createdAt": "2026-09-30T10:00:00.000Z",
+    "postedAt": null
+  }
+]

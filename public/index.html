@@ -1,0 +1,1296 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <title>Threads Affiliate Studio</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Outfit:wght@400;500;600;700;800&family=Pretendard:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="glass.css">
+  <!-- Live Server / Five Server 5500 포트 자동 리다이렉트 스크립트 -->
+  <script>
+    if (window.location.port === '5500') {
+      window.location.href = 'http://localhost:3500' + window.location.pathname;
+    }
+  </script>
+</head>
+<body class="electron-app">
+  <!-- 1. 일렉트론 윈도우 프레임 타이틀바 -->
+  <header class="window-titlebar">
+    <div class="window-drag-area">
+      <div class="window-brand">
+        <span class="app-icon">@</span>
+        <span class="app-name">Threads Studio</span>
+        <span class="app-version-pill" data-i18n="version_pill">v1.5.3 Desktop</span>
+      </div>
+      <div class="window-center-status">
+        <div class="shield-indicator-pill">
+          <span class="shield-dot"></span>
+          <span data-i18n="shield_status">메타 안티봇 방어 쉴드 가동 중</span>
+        </div>
+      </div>
+    </div>
+    <div class="window-controls">
+      <button class="win-btn win-min" title="최소화" aria-label="최소화">─</button>
+      <button class="win-btn win-max" title="최대화" aria-label="최대화">□</button>
+      <button class="win-btn win-close" title="닫기" aria-label="닫기">✕</button>
+    </div>
+  </header>
+
+  <!-- 2. 메인 일렉트론 워크스페이스 (사이드바 + 메인 뷰) -->
+  <div class="app-workspace">
+    <!-- 좌측 네이티브 사이드바 메뉴 -->
+    <aside class="app-sidebar">
+      <div class="sidebar-menu-section">
+        <div class="menu-header" data-i18n="menu_header">메뉴</div>
+        <nav class="sidebar-nav">
+          <button class="nav-item active" data-page="page-dashboard">
+            <span class="nav-icon">📊</span>
+            <span class="nav-label" data-i18n="nav_dashboard">대시보드 & 실행</span>
+          </button>
+          <button class="nav-item" data-page="page-trends">
+            <span class="nav-icon">🔎</span>
+            <span class="nav-label" data-i18n="nav_trends">검색어 시장조사</span>
+            <span class="nav-badge trend-nav-badge">LIVE</span>
+          </button>
+          <button class="nav-item" data-page="page-publish">
+            <span class="nav-icon">✍️</span>
+            <span class="nav-label" data-i18n="nav_publish">게시물 발행</span>
+            <span class="nav-badge" id="sidebarVaultBadge">0</span>
+          </button>
+          <button class="nav-item" data-page="page-cards">
+            <span class="nav-icon">📱</span>
+            <span class="nav-label" data-i18n="nav_cards">포스팅 카드 스튜디오</span>
+            <span class="nav-badge" id="sidebarCardBadge">0</span>
+          </button>
+          <button class="nav-item" data-page="page-comments">
+            <span class="nav-icon">💬</span>
+            <span class="nav-label" data-i18n="nav_rapport">라포 소통 &amp; AI 댓글</span>
+            <span class="nav-badge" id="sidebarCommentBadge">3</span>
+          </button>
+          <button class="nav-item" data-page="page-automation">
+            <span class="nav-icon">⚙️</span>
+            <span class="nav-label" data-i18n="nav_settings">자동화 & 쉴드 설정</span>
+          </button>
+          <button class="nav-item" data-page="page-accounts">
+            <span class="nav-icon">🔐</span>
+            <span class="nav-label" data-i18n="nav_account">계정 & API 연동</span>
+          </button>
+          <button class="nav-item" data-page="page-console">
+            <span class="nav-icon">💻</span>
+            <span class="nav-label" data-i18n="nav_console">실시간 실행 콘솔</span>
+            <span class="nav-indicator-live">LIVE</span>
+          </button>
+        </nav>
+      </div>
+
+      <!-- 사이드바 하단: 연결된 계정 정보 및 봇 퀵 컨트롤 -->
+      <div class="sidebar-footer">
+        <div class="account-card">
+          <div class="user-avatar">👤</div>
+          <div class="user-details">
+            <div class="user-name" id="sidebarThreadsId">계정 확인 중</div>
+            <div class="user-sub">관리자 전용 대시보드</div>
+          </div>
+        </div>
+        <div class="bot-quick-status" id="sidebarStatusBox">
+          <span class="status-pulse-dot" id="quickStatusDot"></span>
+          <span class="status-text-val" id="quickStatusText">대기 중 (IDLE)</span>
+        </div>
+      </div>
+    </aside>
+
+    <!-- 우측 메인 콘텐츠 뷰 영역 (페이지별 전환) -->
+    <main class="app-main-viewport">
+      
+      <!-- ================= PAGE 1: 대시보드 & 실행 ================= -->
+      <section class="page-view active" id="page-dashboard">
+        <div class="page-header-bar">
+          <div class="page-title-group">
+            <h1>운영 대시보드</h1>
+            <p>스레드 계정 안전 지표와 제휴 자동화 봇을 원클릭으로 제어합니다.</p>
+          </div>
+          <div class="page-header-actions">
+            <label class="toggle-control" title="클라우드 서버에서는 백그라운드 창 숨김이 기본 적용됩니다">
+              <input type="checkbox" id="headlessToggle" checked>
+              <span class="toggle-slider"></span>
+              <span class="toggle-label">헤드리스 모드 (창 숨김)</span>
+            </label>
+          </div>
+        </div>
+
+        <div class="dashboard-scroll-content">
+          <!-- 상단 4단 KPI 카드 그리드 -->
+          <div class="kpi-grid">
+            <div class="kpi-card">
+              <div class="kpi-header">
+                <span class="kpi-title">오늘 안전 맞팔 선팔량</span>
+                <span class="kpi-icon blue">👥</span>
+              </div>
+              <div class="kpi-body">
+                <div class="kpi-num" id="dashFollowCount">0 <small>/ 40명</small></div>
+                <div class="kpi-bar-wrapper">
+                  <div class="kpi-bar-fill blue" id="dashFollowBar" style="width: 0%"></div>
+                </div>
+                <div class="kpi-hint">안전 상한 40명 도달 시 자동 중단</div>
+              </div>
+            </div>
+
+            <div class="kpi-card">
+              <div class="kpi-header">
+                <span class="kpi-title">오늘 핫딜 발행 건수</span>
+                <span class="kpi-icon purple">🔥</span>
+              </div>
+              <div class="kpi-body">
+                <div class="kpi-num" id="dashPostCount">0 <small>/ 5건</small></div>
+                <div class="kpi-bar-wrapper">
+                  <div class="kpi-bar-fill purple" id="dashPostBar" style="width: 0%"></div>
+                </div>
+                <div class="kpi-hint">스팸 필터 우회를 위한 1일 권장 한도</div>
+              </div>
+            </div>
+
+            <div class="kpi-card">
+              <div class="kpi-header">
+                <span class="kpi-title">오늘 누른 하트(좋아요)</span>
+                <span class="kpi-icon pink" style="background: rgba(244, 63, 94, 0.2); color: #fb7185;">❤️</span>
+              </div>
+              <div class="kpi-body">
+                <div class="kpi-num" id="dashHeartCount">0 <small>/ 300건</small></div>
+                <div class="kpi-bar-wrapper">
+                  <div class="kpi-bar-fill pink" id="dashHeartBar" style="width: 0%; background: linear-gradient(90deg, #f43f5e, #ec4899);"></div>
+                </div>
+                <div class="kpi-hint">안전 상한 300건 도달 시 자동 셧다운 · 1회 최대 30건</div>
+              </div>
+            </div>
+
+            <div class="kpi-card">
+              <div class="kpi-header">
+                <span class="kpi-title">토스 제휴 수익 요율</span>
+                <span class="kpi-icon green">💰</span>
+              </div>
+              <div class="kpi-body">
+                <div class="kpi-num">10% <small>고정 수수료</small></div>
+                <div class="kpi-hint green-text">쿠팡(3%) 대비 3.3배 높은 수익성</div>
+              </div>
+            </div>
+
+            <div class="kpi-card">
+              <div class="kpi-header">
+                <span class="kpi-title">인간 상호작용 모사</span>
+                <span class="kpi-icon orange">🛡️</span>
+              </div>
+              <div class="kpi-body">
+                <div class="kpi-num green-text">ACTIVE <small>35~110ms</small></div>
+                <div class="kpi-hint">가변 타이핑 및 마우스 오차 시뮬레이션</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 무인 오토파일럿 & 3시간 외출 모드 패널 -->
+          <div class="native-panel autopilot-panel" style="border: 1px solid rgba(59, 130, 246, 0.4); background: linear-gradient(135deg, rgba(30, 41, 59, 0.7) 0%, rgba(15, 23, 42, 0.9) 100%); margin-bottom: 20px;">
+            <div class="panel-header" style="display: flex; justify-content: space-between; align-items: center;">
+              <div>
+                <h3 style="display: flex; align-items: center; gap: 8px; margin: 0 0 4px 0;">
+                  <span>🤖 무인 오토파일럿 (상시 백그라운드 구동)</span>
+                  <span class="badge badge-info" id="autopilotStatusBadge" style="padding: 3px 8px; border-radius: 4px; font-size: 11px; background: rgba(59, 130, 246, 0.2); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.3);">OFF (대기 중)</span>
+                </h3>
+                <span class="panel-sub" style="font-size: 12px; color: var(--text-dim);">외출하거나 일하는 동안 30분 간격으로 안전 선팔(5명) 및 핫딜을 봇 감지 없이 지속 실행합니다.</span>
+              </div>
+              <div style="text-align: right;">
+                <div style="font-size: 12px; font-weight: 600; color: #38bdf8;" id="autopilotNextRunText">다음 실행: 대기 중</div>
+              </div>
+            </div>
+
+            <div style="display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-top: 14px; padding-top: 12px; border-top: 1px solid rgba(255, 255, 255, 0.07);">
+              <button class="btn btn-primary" id="btnStart3hMode" style="background: linear-gradient(135deg, #2563eb, #7c3aed); border: none; padding: 10px 18px; font-weight: 600; cursor: pointer; border-radius: 6px; color: #fff;">
+                ⏳ 3시간 외출 집중 모드 (총 30명 선팔) 시작
+              </button>
+
+              <button class="btn btn-secondary" id="btnStartContinuousMode" style="background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.15); padding: 10px 18px; cursor: pointer; border-radius: 6px; color: #e2e8f0;">
+                🔄 24시간 상시 오토파일럿 시작
+              </button>
+
+              <button class="btn btn-danger" id="btnStopAutoPilot" style="background: #dc2626; border: none; padding: 10px 18px; cursor: pointer; border-radius: 6px; color: #fff; display: none;">
+                🛑 오토파일럿 중단
+              </button>
+
+              <div style="margin-left: auto; display: flex; align-items: center; gap: 8px; font-size: 11px; color: var(--text-dim);">
+                <span>🛡️ 일일 한도(40명) 도달 시 자동 휴식 전환</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- 원클릭 제어기 패널 -->
+          <div class="native-panel">
+            <div class="panel-header">
+              <h3>⚡ 봇 원클릭 실행 제어 센터</h3>
+              <span class="panel-sub">원하는 모드를 클릭하면 즉시 백그라운드에서 안전하게 실행됩니다.</span>
+            </div>
+            <div class="native-btn-row">
+              <button class="cmd-btn primary" id="btnRunGrow">
+                <span class="cmd-icon">👥</span>
+                <div class="cmd-info">
+                  <strong>맞팔 늘리기 시작</strong>
+                  <small>타깃 해시태그 안전 선팔</small>
+                </div>
+              </button>
+
+              <button class="cmd-btn purple" id="btnRunPost">
+                <span class="cmd-icon">🔥</span>
+                <div class="cmd-info">
+                  <strong>1위 핫딜 포스팅</strong>
+                  <small>토스 베스트 + 10% 쉐어링크</small>
+                </div>
+              </button>
+
+              <button class="cmd-btn gradient" id="btnRunAll">
+                <span class="cmd-icon">🚀</span>
+                <div class="cmd-info">
+                  <strong>올인원 전자동 실행</strong>
+                  <small>선팔 12명 + 휴식 + 핫딜 발행</small>
+                </div>
+              </button>
+
+              <button class="cmd-btn pink" id="btnRunHeartFeed" style="background: linear-gradient(135deg, rgba(244, 63, 94, 0.2) 0%, rgba(236, 72, 153, 0.25) 100%); border-color: rgba(244, 63, 94, 0.4);">
+                <span class="cmd-icon" style="color: #fb7185;">❤️</span>
+                <div class="cmd-info">
+                  <strong style="color: #fda4af;">피드 하트 자동 누르기</strong>
+                  <small>팔로워 최신글 10건 하트(좋아요)</small>
+                </div>
+              </button>
+
+              <button class="cmd-btn secondary" id="btnRunLogin">
+                <span class="cmd-icon">🔑</span>
+                <div class="cmd-info">
+                  <strong>스레드 로그인 창</strong>
+                  <small>세션 확인 및 영구 저장</small>
+                </div>
+              </button>
+
+              <button class="cmd-btn danger" id="btnStopBot" disabled>
+                <span class="cmd-icon">🛑</span>
+                <div class="cmd-info">
+                  <strong>작업 중지</strong>
+                  <small>실행 중인 봇 즉시 중단</small>
+                </div>
+              </button>
+            </div>
+          </div>
+
+          <!-- 2단 레이아웃: 최근 활동 타임라인 & 계정 보호 쉴드 규칙 요약 -->
+          <div class="dash-columns">
+            <div class="native-panel half">
+              <div class="panel-header">
+                <h3>🕒 금일 실행 로그 & 활동 기록</h3>
+              </div>
+              <div class="activity-list" id="activityList">
+                <div class="activity-empty">오늘 수행된 자동화 작업 기록이 아직 없습니다.</div>
+              </div>
+            </div>
+
+          <!-- 게시물 성과 회수 (공식 API insights) -->
+          <div class="native-panel">
+            <div class="panel-header">
+              <h3>📊 게시물 성과 · 시간대 분석</h3>
+              <button class="pub-btn-ghost" id="btnLoadInsights">🔄 성과 불러오기</button>
+            </div>
+            <div id="insightsBody">
+              <p class="insights-empty">공식 API에서 최근 게시물의 조회·좋아요·댓글을 회수합니다. 어느 시간대에 올린 글이 실제로 잘 됐는지 계정 실측으로 확인하세요.</p>
+            </div>
+          </div>
+
+            <div class="native-panel half">
+              <div class="panel-header">
+                <h3>🛡️ 활성화된 5중 계정 보호 쉴드</h3>
+              </div>
+              <div class="shield-rules-list">
+                <div class="shield-rule-row">
+                  <span class="rule-chk">✓</span>
+                  <div><strong>일일 상한선 40명 자동 셧다운</strong><p>초과 팔로우 요청 시 즉각 차단하여 메타 어뷰징 필터를 원천 회피합니다.</p></div>
+                </div>
+                <div class="shield-rule-row">
+                  <span class="rule-chk">✓</span>
+                  <div><strong>5회 팔로우마다 35초 Micro-break</strong><p>사람이 게시글을 읽는 것과 동일한 자연스러운 체류 시간을 갖습니다.</p></div>
+                </div>
+                <div class="shield-rule-row">
+                  <span class="rule-chk">✓</span>
+                  <div><strong>인간 타건 모사 (타이핑 난수화)</strong><p>0초 붙여넣기 대신 글자당 35ms~110ms 가변 입력으로 봇 탐지를 회피합니다.</p></div>
+                </div>
+                <div class="shield-rule-row">
+                  <span class="rule-chk">✓</span>
+                  <div><strong>첫 댓글 링크 분리 게시</strong><p>본문 링크 삽입에 따른 알고리즘 노출 제한(섀도우밴)을 방지합니다.</p></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= PAGE 8: 게시물 발행 ================= -->
+      <section class="page-view" id="page-publish">
+        <div class="page-header-bar">
+          <div class="page-title-group">
+            <h1>게시물 발행</h1>
+            <p>콘텐츠 볼트에서 불러오거나 직접 작성해 스레드에 바로 올립니다. 발행 규격은 실시간으로 검사됩니다.</p>
+          </div>
+          <div class="page-header-actions">
+            <button class="pub-btn-generate" id="btnGenCandidates">
+              <span>✨</span> 후보 10개 생성
+            </button>
+            <button class="btn-primary-action" id="btnPublishNow">
+              <span>🚀</span> 지금 발행하기
+            </button>
+          </div>
+        </div>
+
+        <!-- 후보 선택 영역 -->
+        <div class="pub-workspace" id="pubWorkspace">
+        <!-- 모바일 전용 뷰 스위처 (후보 선택 vs 본문 편집) -->
+        <div class="pub-mobile-switcher" id="pubMobileSwitcher">
+          <button class="pub-mob-tab active" data-target="cand" id="tabMobCand">
+            <span>📋</span> 추천 후보 <strong id="mobCandCountBadge">0</strong>
+          </button>
+          <button class="pub-mob-tab" data-target="editor" id="tabMobEditor">
+            <span>✍️</span> 본문 작성 & 미디어
+          </button>
+        </div>
+
+        <div class="pub-panel pub-cand-panel" id="pubCandPanel" hidden>
+          <div class="pub-panel-head">
+            <h3>
+              발행 후보 <span class="pub-cand-count" id="pubCandCount">0</span>
+              <span class="pub-selected-badge" id="pubSelectedBadge" hidden>✓ 1건 선택됨</span>
+            </h3>
+            <div class="pub-panel-actions">
+              <button type="button" class="pub-btn-ghost pub-btn-sm" id="btnSelectAllCand" title="후보 10개 전체 선택">전체 선택</button>
+              <button type="button" class="pub-btn-ghost pub-btn-sm" id="btnDeselectAllCand" title="선택 모두 해제">선택 해제</button>
+              <span class="pub-hint" id="pubCandSource">—</span>
+              <button class="pub-btn-ghost" id="btnCandClose">닫기</button>
+            </div>
+          </div>
+          <div class="pub-applied" id="pubCandApplied" hidden>
+            <div class="pub-applied-header">
+              <span class="pub-selected-count-tag" id="pubSelectedCountTag">선택 1건</span>
+              <span class="pub-applied-text"></span>
+            </div>
+            <div class="pub-applied-actions">
+              <button class="pub-applied-go" id="btnGoToBody">본문 확인 ↓</button>
+            </div>
+          </div>
+          <div class="pub-cand-grid" id="pubCandGrid"></div>
+          <div class="pub-cand-footer" id="pubCandFooter" hidden>
+            <button class="pub-cand-footer-btn btn-publish-trigger" id="btnCandFooterPublish">
+              <span>🚀</span> 선택한 후보 (1건) 스레드에 지금 발행하기
+            </button>
+          </div>
+        </div>
+
+        <div class="pub-layout">
+          <!-- 좌측: 작성 영역 -->
+          <div class="pub-main">
+            <div class="pub-panel">
+              <div class="pub-panel-head">
+                <h3>1. 콘텐츠 유형</h3>
+                <span class="pub-hint">계획서 권장 믹스 — 텍스트 50 : 이미지 30 : 영상 20</span>
+              </div>
+              <div class="pub-type-group" id="pubTypeGroup">
+                <button class="pub-type active" data-type="text">
+                  <span class="pub-type-icon">📝</span>
+                  <strong>텍스트</strong>
+                  <small>댓글 유도 최강</small>
+                </button>
+                <button class="pub-type" data-type="image">
+                  <span class="pub-type-icon">🖼️</span>
+                  <strong>이미지</strong>
+                  <small>저장·공유 유도</small>
+                </button>
+                <button class="pub-type" data-type="video">
+                  <span class="pub-type-icon">🎬</span>
+                  <strong>동영상</strong>
+                  <small>체류시간 최대</small>
+                </button>
+              </div>
+              <div class="pub-media-slot" id="pubMediaSlot" hidden>
+                <!-- AI 미디어 원클릭 자동 생성 카드 -->
+                <div class="pub-ai-media-card" id="pubAiMediaCard">
+                  <div class="pub-ai-media-info">
+                    <span class="pub-ai-media-title" id="pubAiMediaTitle">✨ 본문 맞춤 AI 장면 이미지 자동 생성</span>
+                    <span class="pub-ai-media-desc" id="pubAiMediaDesc">현재 본문을 분석해 드라마 한 장면처럼 감성적인 애니/웹툰 이미지를 자동 생성합니다.</span>
+                  </div>
+                  <div class="pub-style-group" id="pubStyleGroup">
+                    <button type="button" class="pub-style active" data-style="photo">📷 시네마틱 실사</button>
+                    <button type="button" class="pub-style" data-style="editorial">☕ 킨포크 감성</button>
+                    <button type="button" class="pub-style" data-style="webtoon">📖 한국 웹툰</button>
+                    <button type="button" class="pub-style" data-style="anime">🌸 일본 애니</button>
+                    <button type="button" class="pub-style" data-style="3d_render">🎨 픽사 3D</button>
+                    <button type="button" class="pub-style" data-style="retro_film">🎞️ 90s 필름</button>
+                    <button type="button" class="pub-style" data-style="card">📝 글씨 카드</button>
+                  </div>
+                  <label class="pub-character-toggle" id="pubCharacterToggle">
+                    <input type="checkbox" id="pubUseYuna">
+                    <span>👩‍🎨 고정 캐릭터 <b>유나</b>를 주인공으로 (체크 시 특정 여성 캐릭터로 고정)</span>
+                  </label>
+                  <div class="pub-ai-media-btns">
+                    <button class="pub-ai-media-btn" id="btnGenAiMedia">
+                      <span>✨</span> AI 미디어 즉시 생성
+                    </button>
+                    <button class="pub-ai-prompt-btn" id="btnGetAiPrompt">
+                      <span>📋</span> 프롬프트 추출 & 복사
+                    </button>
+                  </div>
+                </div>
+
+                <!-- PromptDaily 스타일 프롬프트 표시 박스 -->
+                <div class="pub-prompt-box" id="pubPromptBox" hidden>
+                  <div class="pub-prompt-head">
+                    <span class="pub-prompt-tag" id="pubPromptTag">PromptDaily 추천 스타일</span>
+                    <span class="pub-prompt-meta" id="pubPromptMeta">Midjourney v6 / DALL-E 3 최적화 (4:5)</span>
+                    <button class="pub-prompt-copy-btn" id="btnRerollPrompt" title="같은 본문으로 렌즈·조명·구도를 다시 뽑습니다">🎲 다시 뽑기</button>
+                    <button class="pub-prompt-copy-btn" id="btnCopyPromptText">📋 복사</button>
+                  </div>
+                  <div class="pub-prompt-tabs" id="pubPromptTabs"></div>
+                  <div class="pub-prompt-content" id="pubPromptContent"></div>
+                  <div class="pub-prompt-scene" id="pubPromptScene"></div>
+                  <div class="pub-scene-spec-editor" id="pubSceneSpecEditor"></div>
+                </div>
+
+                <label class="pub-dropzone" id="pubDropzone">
+                  <input type="file" id="pubMediaInput" accept="image/png,image/jpeg,image/webp,image/gif,video/mp4,video/quicktime,video/webm" multiple hidden>
+                  <span class="pub-dropzone-icon">📎</span>
+                  <strong id="pubDropzoneText">또는 직접 파일 선택 (클릭/드래그)</strong>
+                  <small>이미지 png·jpg·webp·gif / 영상 mp4·mov·webm · 최대 60MB · 권장 4:5 세로</small>
+                </label>
+                <div class="pub-media-list" id="pubMediaList"></div>
+              </div>
+            </div>
+
+            <div class="pub-panel">
+              <div class="pub-panel-head">
+                <h3>2. 본문 작성</h3>
+                <div class="pub-panel-actions">
+                  <button type="button" class="pub-btn-ghost" id="btnInsertLinkToBody" style="color: #6ee7b7; border-color: rgba(16, 185, 129, 0.4);" title="본문 내용에 맞는 최신 기사/핫딜 링크 자동 삽입">🔗 본문에 링크 추가</button>
+                  <select id="pubVaultCategory" class="pub-select">
+                    <option value="">전체 카테고리</option>
+                  </select>
+                  <button class="pub-btn-ghost" id="btnPubVaultSave" title="현재 본문 내용을 볼트에 새 원고로 저장합니다">💾 볼트에 저장</button>
+                  <button class="pub-btn-ghost" id="btnPubVaultPick">🎲 볼트에서 불러오기</button>
+                </div>
+              </div>
+              <textarea id="pubBody" class="pub-textarea" rows="12"
+                placeholder="훅 문장으로 시작하세요.&#10;&#10;스레드는 첫 두 줄이 전부입니다. 질문·고백·역설·숫자·빈칸 중 하나로 열고,&#10;여백을 충분히 준 뒤, 마지막은 답하기 쉬운 질문으로 닫으세요."></textarea>
+
+              <div class="pub-meter-row" id="pubMeters">
+                <div class="pub-meter" id="meterLen">
+                  <span class="pub-meter-k">본문 길이</span>
+                  <span class="pub-meter-v"><b id="mLen">0</b>자</span>
+                  <span class="pub-meter-t">권장 180~350</span>
+                </div>
+                <div class="pub-meter" id="meterBlank">
+                  <span class="pub-meter-k">여백 비율</span>
+                  <span class="pub-meter-v"><b id="mBlank">0</b>%</span>
+                  <span class="pub-meter-t">권장 30~50</span>
+                </div>
+                <div class="pub-meter" id="meterTag">
+                  <span class="pub-meter-k">해시태그</span>
+                  <span class="pub-meter-v"><b id="mTag">0</b>개</span>
+                  <span class="pub-meter-t">권장 3~5</span>
+                </div>
+                <div class="pub-meter" id="meterClose">
+                  <span class="pub-meter-k">질문형 클로징</span>
+                  <span class="pub-meter-v"><b id="mClose">없음</b></span>
+                  <span class="pub-meter-t">댓글 유도 필수</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="pub-panel">
+              <div class="pub-panel-head">
+                <h3>3. 자동 댓글·답글 <span class="pub-optional">별도 파이프라인</span></h3>
+                <div class="pub-panel-actions">
+                  <button type="button" class="pub-btn-ghost" id="btnGenRelatedLink" title="관련 링크를 본문에 추가">🔗 본문에 관련 링크 추가</button>
+                  <span class="pub-hint">모든 발행은 최상위 본문 1건만 허용됩니다.</span>
+                </div>
+              </div>
+              <textarea id="pubFirstComment" class="pub-textarea pub-textarea-sm" rows="3" disabled
+                placeholder="라포 답글은 최상위 게시 발행과 분리되어 ‘라포 소통’ 메뉴에서 실행됩니다."></textarea>
+              <div class="pub-affiliate-warn" id="pubAffiliateWarn" hidden>
+                ⚠ 링크가 있는데 제휴 고지 문구가 없습니다. 법적 필수 항목입니다.
+              </div>
+            </div>
+
+            <!-- 하단 상시 발행 액션 바 -->
+            <div class="pub-panel pub-bottom-action-panel">
+              <div class="pub-bottom-action-wrap">
+                <button class="pub-btn-publish-massive btn-publish-trigger" id="btnPublishNowBottom">
+                  <span>🚀</span> 스레드에 지금 발행하기 (즉시 업로드)
+                </button>
+                <div class="pub-bottom-hint">
+                  <span>⚡ <strong>Meta Graph API</strong> 기반 1~2초 안전 발행</span>
+                  <span>· 일일 발행 쿼터 실시간 보호</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 우측: 미리보기 + 검색어 -->
+          <aside class="pub-side">
+            <div class="pub-panel pub-preview-panel">
+              <div class="pub-panel-head"><h3>스레드 미리보기</h3></div>
+              <div class="pub-preview">
+                <div class="pub-preview-head">
+                  <div class="pub-avatar" id="pubAvatar">?</div>
+                  <div>
+                    <div class="pub-preview-name" id="pubPreviewName">내 계정</div>
+                    <div class="pub-preview-time">지금</div>
+                  </div>
+                </div>
+                <div class="pub-preview-body" id="pubPreviewBody">
+                  <span class="pub-preview-empty">본문을 입력하면 여기에 표시됩니다.</span>
+                </div>
+                <div class="pub-preview-actions"><span>♡</span><span>💬</span><span>↻</span><span>➤</span></div>
+                <div class="pub-preview-reply" id="pubPreviewReply" hidden>
+                  <div class="pub-preview-reply-label">첫 번째 댓글</div>
+                  <div id="pubPreviewReplyBody"></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="pub-panel">
+              <div class="pub-panel-head">
+                <h3>검색어 태그</h3>
+                <span class="pub-hint">클릭하면 본문 끝에 삽입됩니다</span>
+              </div>
+              <div class="pub-tag-cloud" id="pubTagCloud"></div>
+            </div>
+
+            <div class="pub-panel">
+              <div class="pub-panel-head"><h3>발행 옵션</h3></div>
+              <label class="pub-check">
+                <input type="checkbox" id="pubHeadless">
+                <span>창 없이 백그라운드 실행</span>
+              </label>
+              <div class="pub-quota" id="pubQuota">금일 발행 한도를 확인하는 중...</div>
+            </div>
+          </aside>
+        </div>
+        </div><!-- /pub-workspace -->
+
+        <!-- 볼트 선택 · 관리 모달 -->
+        <div class="pub-modal" id="pubVaultModal" hidden>
+          <div class="pub-modal-box">
+            <div class="pub-modal-head">
+              <h3>콘텐츠 볼트</h3>
+              <button class="pub-modal-close" id="btnPubVaultClose" aria-label="닫기">✕</button>
+            </div>
+
+            <!-- 관리 툴바 -->
+            <div class="pub-vault-toolbar">
+              <div class="pub-vault-tabs">
+                <button class="pub-vault-tab is-active" data-vaulttab="READY">발행대기 <span class="pub-vault-tab-n" id="vaultCountReady">0</span></button>
+                <button class="pub-vault-tab" data-vaulttab="POSTED">발행완료 <span class="pub-vault-tab-n" id="vaultCountPosted">0</span></button>
+                <button class="pub-vault-tab" data-vaulttab="DELETED">삭제함 <span class="pub-vault-tab-n" id="vaultCountDeleted">0</span></button>
+              </div>
+              <button class="pub-btn-ghost" id="btnVaultNew">➕ 신규 원고</button>
+            </div>
+
+            <!-- 신규/수정 폼 (기본 숨김) -->
+            <div class="pub-vault-editor" id="vaultEditor" hidden>
+              <div class="pub-vault-editor-head">
+                <strong id="vaultEditorTitle">새 원고 추가</strong>
+                <button class="pub-modal-close" id="btnVaultEditorCancel" title="취소" aria-label="취소">✕</button>
+              </div>
+              <input type="hidden" id="vaultEditId">
+              <div class="pub-vault-editor-row">
+                <input type="text" id="vaultEditCategory" class="pub-input" placeholder="카테고리 (예: 꿀팁정보)">
+                <input type="text" id="vaultEditHook" class="pub-input" placeholder="훅 유형 (선택, 예: 밸런스)">
+              </div>
+              <textarea id="vaultEditText" class="pub-textarea" rows="7" placeholder="본문을 입력하세요. (최대 500자)"></textarea>
+              <input type="text" id="vaultEditTags" class="pub-input" placeholder="태그 (공백이나 쉼표로 구분, 예: #절약 #꿀팁)">
+              <div class="pub-vault-editor-actions">
+                <span class="pub-vault-editor-len"><span id="vaultEditLen">0</span>/500</span>
+                <button class="pub-btn-primary" id="btnVaultEditorSave">저장</button>
+              </div>
+            </div>
+
+            <div class="pub-vault-list" id="pubVaultList"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= PAGE 2: 포스팅 카드 스튜디오 ================= -->
+      <section class="page-view" id="page-cards">
+        <div class="page-header-bar">
+          <div class="page-title-group">
+            <h1>포스팅 카드 스튜디오</h1>
+            <p>토스 실시간 특가 상품을 바이럴 카피라이팅으로 자동 생성하고 원클릭으로 스레드에 등록합니다.</p>
+          </div>
+          <div class="page-header-actions">
+            <button class="btn-primary-action" id="btnGenerateCards">
+              <span>✨</span> 새 핫딜 카드 자동 생성
+            </button>
+          </div>
+        </div>
+
+        <div class="cards-view-container">
+          <div class="cards-subbar">
+            <div class="cards-counter">총 <strong id="cardsCountText">0</strong>개의 준비된 포스팅 카드</div>
+            <div class="cards-filter-group">
+              <button class="filter-chip active" data-filter="all">전체보기</button>
+              <button class="filter-chip" data-filter="READY">발행대기</button>
+              <button class="filter-chip" data-filter="POSTED">발행완료</button>
+            </div>
+          </div>
+
+          <div class="cards-grid" id="cardsGrid">
+            <!-- 자바스크립트로 렌더링 -->
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= PAGE 3: 자동화 & 쉴드 설정 ================= -->
+      <section class="page-view" id="page-automation">
+        <div class="page-header-bar">
+          <div class="page-title-group">
+            <h1>자동화 & 쉴드 상세 설정</h1>
+            <p>팔로우 목표량, 탐색 키워드, 안전 대기 시간 및 문구 템플릿을 설정합니다.</p>
+          </div>
+          <div class="page-header-actions">
+            <button class="btn-primary-action" id="btnSaveConfig">
+              💾 설정 저장하기
+            </button>
+          </div>
+        </div>
+
+        <div class="settings-scroll-content">
+          <form id="settingsForm" class="native-form-grid">
+            <div class="native-panel">
+              <div class="panel-header"><h3>👥 맞팔 늘리기 파라미터</h3></div>
+              
+              <div class="form-item">
+                <label>1회 실행 시 팔로우 목표 수</label>
+                <div class="slider-box">
+                  <input type="range" id="targetCount" min="5" max="20" value="15" step="1">
+                  <span class="slider-bubble" id="targetCountVal">15명</span>
+                </div>
+                <div class="form-tip">안전 권장: 1회당 12~15명 (최대 20명)</div>
+              </div>
+
+              <div class="form-item">
+                <label>탐색 타깃 해시태그 (쉼표로 구분)</label>
+                <input type="text" id="followKeywords" value="#스팔, #맞팔, #선팔하면맞팔, #소통환영, #스레드맞팔">
+                <div class="form-tip">맞팔 활성 유저가 많은 태그를 순차적으로 검색합니다.</div>
+              </div>
+
+              <div class="form-row">
+                <div class="form-item half">
+                  <label>최소 딜레이 (초)</label>
+                  <input type="number" id="minDelaySeconds" min="5" max="30" value="8">
+                </div>
+                <div class="form-item half">
+                  <label>최대 딜레이 (초)</label>
+                  <input type="number" id="maxDelaySeconds" min="10" max="60" value="16">
+                </div>
+              </div>
+              <div class="form-tip">각 팔로우 사이 8~16초 무작위 지연으로 기계적 패턴을 숨깁니다.</div>
+            </div>
+
+            <div class="native-panel">
+              <div class="panel-header"><h3>📝 토스 핫딜 기본 문구 템플릿</h3></div>
+
+              <div class="form-item">
+                <label>본문 템플릿 ({title}, {price}, {link} 치환)</label>
+                <textarea id="bodyTemplate" rows="5"></textarea>
+              </div>
+
+              <div class="form-item">
+                <label>라포 답글 템플릿 (공식 API 전용 서비스에서 자동 생성)</label>
+                <textarea id="commentTemplate" rows="3" disabled placeholder="제휴 링크와 고지 문구는 본문에 포함됩니다."></textarea>
+              </div>
+            </div>
+          </form>
+        </div>
+      </section>
+
+      <!-- ================= PAGE 4: 계정 & API 연동 ================= -->
+      <section class="page-view" id="page-accounts">
+        <div class="page-header-bar">
+          <div class="page-title-group">
+            <h1>계정 & API 연동 관리</h1>
+            <p>스레드 자동화 계정 및 토스 쉐어링크 10% 제휴 공식 Open API 키를 설정합니다.</p>
+          </div>
+          <div class="page-header-actions">
+            <button class="btn-primary-action" id="btnSaveAccounts">
+              🔐 계정 정보 저장
+            </button>
+          </div>
+        </div>
+
+        <div class="settings-scroll-content">
+          <div class="native-form-grid">
+            <div class="native-panel">
+              <div class="panel-header"><h3>스레드(Threads) 로그인 계정</h3></div>
+              <div class="form-item">
+                <label>스레드 / 인스타그램 로그인 ID (이메일/유저명)</label>
+                <input type="text" id="envThreadsId" placeholder="예: your-id@example.com">
+              </div>
+              <div class="form-item">
+                <label>비밀번호</label>
+                <input type="password" id="envThreadsPw" placeholder="새 비밀번호 입력 시 변경">
+              </div>
+              <div class="form-tip">모든 비밀번호는 로컬 `.env` 파일에만 암호화 보관되며 외부에 유출되지 않습니다.</div>
+            </div>
+
+            <div class="native-panel">
+              <div class="panel-header"><h3>토스 쉐어링크 공식 Open API</h3></div>
+              <div class="form-item">
+                <label>ACCESS KEY</label>
+                <input type="text" id="envTossAccessKey">
+              </div>
+              <div class="form-item">
+                <label>SECRET KEY</label>
+                <input type="password" id="envTossSecretKey" placeholder="새 시크릿키 입력 시 변경">
+              </div>
+              <div class="form-item">
+                <label>PUBLISHER ID (제휴 회원 연동 ID)</label>
+                <input type="text" id="envTossPublisherId">
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= PAGE 5: 검색어 시장조사 ================= -->
+      <section class="page-view" id="page-trends">
+        <div class="page-header-bar trend-page-header">
+          <div class="page-title-group">
+            <div class="eyebrow-label">CONTENT INTELLIGENCE</div>
+            <h1>검색어 시장조사</h1>
+            <p>Google 급상승, 네이버 검색 관심도, Threads 대화 신호를 겹쳐 오늘 쓸 소재를 찾습니다.</p>
+          </div>
+          <div class="page-header-actions">
+            <button class="btn-secondary-action" id="btnRefreshTrends">↻ 실시간 새로고침</button>
+          </div>
+        </div>
+
+        <div class="dashboard-scroll-content trend-dashboard">
+          <!-- 상단 소스 상태 스트립 -->
+          <div class="trend-source-strip">
+            <div class="trend-source-card" data-source="google">
+              <div class="source-logo google-logo">G</div>
+              <div><strong>Google Trends</strong><span id="googleSourceStatus">실시간 RSS 연결됨</span></div>
+              <i class="source-state connected" id="googleSourceDot"></i>
+            </div>
+            <div class="trend-source-card" data-source="naver">
+              <div class="source-logo naver-logo">N</div>
+              <div><strong>NAVER API HUB</strong><span id="naverSourceStatus">Key Vault & 데이터랩 연동</span></div>
+              <i class="source-state ready" id="naverSourceDot"></i>
+            </div>
+            <div class="trend-source-card" data-source="threads">
+              <div class="source-logo threads-logo">@</div>
+              <div><strong>Threads 실시간</strong><span id="threadsSourceStatus">헤드리스 트랙 A 가동 중</span></div>
+              <i class="source-state connected" id="threadsSourceDot"></i>
+            </div>
+            <div class="trend-update-meta">
+              <span>마지막 데이터 수집</span>
+              <strong id="trendUpdatedAt">-</strong>
+            </div>
+          </div>
+
+          <!-- 01. 검색어 후보 입력 & 빠른 탐색 -->
+          <section class="trend-search-panel">
+            <div class="trend-search-copy">
+              <div class="step-badge-row">
+                <span class="trend-step">01 · 후보 입력 및 빠른 탐색</span>
+                <span class="hint-pill">💡 아래 3대 플랫폼 리스트에서 키워드를 클릭하면 검색창에 바로 추가됩니다</span>
+              </div>
+              <h2>시장 반응이 검증된 키워드를 한 번에 교차 분석하세요</h2>
+              <p>쉼표(,)로 구분하여 최대 5개까지 비교할 수 있습니다. 각 플랫폼의 실시간 인기 검색어 중 수익화에 유리한 소재를 선택해 보세요.</p>
+            </div>
+            <form class="trend-search-form" id="trendSearchForm">
+              <div class="trend-input-wrap">
+                <span class="search-icon">🔍</span>
+                <input id="trendKeywordInput" type="text" maxlength="150" value="핫딜, 쿠폰, 가성비, 선물, 특가" aria-label="분석할 검색어" placeholder="예: 무선청소기, 로봇청소기, 가성비 살림템, 오운완">
+                <button type="submit" id="btnAnalyzeTrends">
+                  <span>⚡ 교차 분석 시작</span>
+                </button>
+              </div>
+              <div class="quick-keyword-row">
+                <span class="quick-label">⚡ 테마별 퀵셋:</span>
+                <button type="button" class="quick-keyword-chip" data-keywords="핫딜, 쿠폰, 특가, 세일, 할인">🔥 초특가 할인</button>
+                <button type="button" class="quick-keyword-chip" data-keywords="가성비 살림템, 자취생꿀템, 로봇청소기, 무선청소기">🏠 생활·가전</button>
+                <button type="button" class="quick-keyword-chip" data-keywords="단백질 쉐이크, 오운완, 영양제 추천, 헬스루틴">💪 헬스·식품</button>
+                <button type="button" class="quick-keyword-chip" data-keywords="#스하리, #스친, #반하리, #스레드1000명프로젝트">💬 스레드 소통</button>
+                <button type="button" class="quick-keyword-chip" data-keywords="선물세트, 디퓨저, 여행숙박, 맛집추천">🎁 선물·경험</button>
+              </div>
+            </form>
+          </section>
+
+          <!-- KPI 요약 카드 4종 -->
+          <div class="trend-kpi-grid">
+            <article class="trend-kpi featured">
+              <span class="kpi-label">가장 유망한 소재</span>
+              <strong id="topOpportunityKeyword">분석 대기</strong>
+              <small id="topOpportunityReason">검색어를 분석하면 최적의 추천 이유가 표시됩니다.</small>
+            </article>
+            <article class="trend-kpi">
+              <span class="kpi-label">분석 후보 키워드</span>
+              <strong><b id="analyzedKeywordCount">0</b>개</strong>
+              <small>한 번에 최대 5개 교차 비교</small>
+            </article>
+            <article class="trend-kpi">
+              <span class="kpi-label">3대 플랫폼 실시간 지표</span>
+              <strong><b id="totalLiveTrendCount">24</b>개</strong>
+              <small>구글 8개 · 네이버 8개 · 스레드 8개</small>
+            </article>
+            <article class="trend-kpi">
+              <span class="kpi-label">즉시 작성 추천</span>
+              <strong><b id="writeNowCount">0</b>개</strong>
+              <small>교차 점수 70점 이상 고득점</small>
+            </article>
+          </div>
+
+          <!-- 신설: 3대 플랫폼 실시간 인텔리전스 (구글 / 네이버 / 스레드 3단 리스트) -->
+          <div class="trend-section-header">
+            <div>
+              <span class="trend-step">REALTIME INTELLIGENCE</span>
+              <h2>3대 플랫폼 실시간 핫 트렌드 리스트</h2>
+            </div>
+            <span class="click-hint-badge">키워드 클릭 시 검색창에 즉시 자동 입력</span>
+          </div>
+
+          <div class="trend-platforms-grid">
+            <!-- 1. Google 실시간 급상승 리스트 -->
+            <section class="platform-trend-card google-card">
+              <div class="platform-card-header">
+                <div class="platform-title-wrap">
+                  <div class="source-logo google-logo">G</div>
+                  <div>
+                    <h3>Google 급상승</h3>
+                    <span class="platform-sub">대한민국 실시간 RSS</span>
+                  </div>
+                </div>
+                <span class="live-pulse">LIVE</span>
+              </div>
+              <div class="platform-list-body" id="googleTrendList">
+                <div class="trend-skeleton"></div>
+                <div class="trend-skeleton"></div>
+                <div class="trend-skeleton"></div>
+              </div>
+            </section>
+
+            <!-- 2. NAVER 쇼핑 & 검색 인기 트렌드 리스트 -->
+            <section class="platform-trend-card naver-card">
+              <div class="platform-card-header">
+                <div class="platform-title-wrap">
+                  <div class="source-logo naver-logo">N</div>
+                  <div>
+                    <h3>NAVER 트렌드</h3>
+                    <span class="platform-sub">쇼핑 &amp; 데이터랩 핫딜</span>
+                  </div>
+                </div>
+                <span class="naver-badge">HOT DEAL</span>
+              </div>
+              <div class="platform-list-body" id="naverTrendList">
+                <div class="trend-skeleton"></div>
+                <div class="trend-skeleton"></div>
+                <div class="trend-skeleton"></div>
+              </div>
+            </section>
+
+            <!-- 3. Threads 실시간 핫 토픽 & 소통 태그 리스트 -->
+            <section class="platform-trend-card threads-card">
+              <div class="platform-card-header">
+                <div class="platform-title-wrap">
+                  <div class="source-logo threads-logo">@</div>
+                  <div>
+                    <h3>Threads 실시간 핫픽</h3>
+                    <span class="platform-sub">트랙 A 피드 &amp; 라포 소통</span>
+                  </div>
+                </div>
+                <span class="threads-badge">TRACK A</span>
+              </div>
+              <div class="platform-list-body" id="threadsTrendList">
+                <div class="trend-skeleton"></div>
+                <div class="trend-skeleton"></div>
+                <div class="trend-skeleton"></div>
+              </div>
+            </section>
+          </div>
+
+          <!-- 02. 오늘의 콘텐츠 기회 (우선순위) -->
+          <div class="trend-content-grid single-col">
+            <section class="trend-panel opportunity-panel">
+              <div class="trend-panel-head">
+                <div>
+                  <span class="trend-step">02 · 우선순위</span>
+                  <h2>오늘의 콘텐츠 기획 추천 (교차 종합 평가)</h2>
+                </div>
+                <span class="truth-badge">실데이터 AI 스코어링</span>
+              </div>
+              <div class="opportunity-list" id="opportunityList">
+                <div class="trend-empty-state">
+                  <span>◎</span>
+                  <strong>아직 분석 전입니다</strong>
+                  <p>상단에서 검색어를 입력하거나 위의 3대 플랫폼 트렌드 키워드를 클릭한 뒤 [교차 분석 시작]을 눌러주세요.</p>
+                </div>
+              </div>
+            </section>
+          </div>
+
+          <!-- 03. 근거 확인: 플랫폼별 교차 비교 테이블 -->
+          <section class="trend-panel comparison-panel">
+            <div class="trend-panel-head">
+              <div>
+                <span class="trend-step">03 · 상세 근거</span>
+                <h2>플랫폼별 교차 비교 데이터 시트</h2>
+              </div>
+              <span class="comparison-note">Google 급상승 · 네이버 관심도 · Threads 언급량 종합</span>
+            </div>
+            <div class="trend-table-wrap">
+              <table class="trend-table">
+                <thead>
+                  <tr>
+                    <th>검색어</th>
+                    <th>종합점수</th>
+                    <th>네이버 관심도</th>
+                    <th>7일 변화율</th>
+                    <th>Google 급상승</th>
+                    <th>Threads 최근 언급</th>
+                    <th>최종 판정</th>
+                  </tr>
+                </thead>
+                <tbody id="trendComparisonBody">
+                  <tr>
+                    <td colspan="7" class="trend-table-empty">분석 결과가 여기에 표시됩니다.</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </section>
+
+          <!-- 하단 지표 해석 안내 -->
+          <div class="trend-footnote">
+            <strong>💡 지표 해석 안내</strong>
+            <span>네이버 값은 기간 내 상대 관심도(0~100)와 7일간의 변화율입니다. Google은 대한민국 실시간 급상승 순위와 추정 검색량입니다. Threads는 <b>헤드리스 트랙 A(실시간 검색 엔진)</b>를 통해 실제 공개 대화의 키워드 언급 건수 및 최신 포스트를 100% 무인 연동합니다.</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= PAGE 6: 실시간 실행 콘솔 ================= -->
+      <section class="page-view" id="page-console">
+        <div class="page-header-bar">
+          <div class="page-title-group">
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <h1>실시간 실행 콘솔 &amp; 시스템 로그 아카이브</h1>
+              <span class="db-status-badge" id="dbStatusBadge">💾 SQLite DB 영구 보관 가동 중</span>
+            </div>
+            <p>브라우저를 새로고침해도 과거 로그가 DB에서 즉시 복원되며, 스레드 자동화의 모든 실행 이력이 안전하게 영구 보존됩니다.</p>
+          </div>
+          <div class="page-header-actions">
+            <a href="/api/logs/download" class="btn-secondary-action" id="btnDownloadLogs" download style="text-decoration: none; display: inline-flex; align-items: center; gap: 5px;">
+              <span>💾 로그 백업 (.log)</span>
+            </a>
+            <button class="btn-secondary-action" id="btnCopyLogs">📋 전체 복사</button>
+            <button class="btn-secondary-action danger" id="btnClearLogs">🗑️ DB 로그 비우기</button>
+          </div>
+        </div>
+
+        <div class="console-viewport">
+          <!-- 콘솔 헤더 메타 바 & 레벨별 필터 탭 -->
+          <div class="console-meta-bar">
+            <div class="console-dots">
+              <span class="c-dot red"></span>
+              <span class="c-dot yellow"></span>
+              <span class="c-dot green"></span>
+            </div>
+            <div class="console-title">system_logs.db (SQLite Archive &amp; SSE Realtime)</div>
+            
+            <!-- 레벨 필터 버튼 그룹 -->
+            <div class="console-filter-group" id="consoleFilterGroup">
+              <button type="button" class="filter-chip active" data-filter="all">전체보기 (<span id="statTotalLogs">0</span>)</button>
+              <button type="button" class="filter-chip" data-filter="error">🚨 에러/경고 (<span id="statErrorLogs">0</span>)</button>
+              <button type="button" class="filter-chip" data-filter="success">🎉 성공 (<span id="statSuccessLogs">0</span>)</button>
+              <button type="button" class="filter-chip" data-filter="system">⚙️ 시스템/봇</button>
+            </div>
+
+            <div class="console-indicator" id="consoleIndicator">실시간 연결됨</div>
+          </div>
+          <div class="terminal-body" id="terminalLogs">
+            <div class="log-entry system">[SYSTEM] SQLite 로그 데이터베이스에서 이전 기록을 불러오는 중...</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= PAGE 7: 라포 소통 & AI 댓글 관리 ================= -->
+      <section class="page-view" id="page-comments">
+        <div class="page-header-bar">
+          <div class="page-title-group">
+            <h1>라포(Rapport) 소통 &amp; AI 댓글 관리</h1>
+            <p>현재 승인된 공식 API 권한으로 내 게시물의 미응답 댓글을 읽고, 맥락에 맞는 안전한 AI 답글을 남깁니다.</p>
+          </div>
+          <div class="page-header-actions" style="display: flex; align-items: center; gap: 10px;">
+            <div style="display: flex; align-items: center; gap: 6px; font-size: 0.85rem; color: var(--text-secondary);">
+              <span>실행량:</span>
+              <select id="autoCommentBatchCount" style="background: rgba(0,0,0,0.4); border: 1px solid var(--panel-border); color: #fff; border-radius: 6px; padding: 6px 10px; font-size: 0.85rem; outline: none;">
+                <option value="1" selected>1건 (통제 실행·권장)</option>
+                <option value="3">3건 (안전 일괄 응답)</option>
+              </select>
+            </div>
+            <button class="btn-primary-action" id="btnRunAutoComment" style="background: linear-gradient(135deg, #2563eb, #7c3aed); font-weight: 600;">
+              <span>⏳ 댓글 읽기·발행 권한 확인 중</span>
+            </button>
+            <button class="btn-primary-action" id="btnRunFeedHeart" style="background: linear-gradient(135deg, #e11d48 0%, #ec4899 100%); font-weight: 600;">
+              <span>❤️ 피드 하트 자동 누르기 (10건)</span>
+            </button>
+            <button class="btn-primary-action" id="btnRunFeedRapportDry" style="background: rgba(255,255,255,0.06); border: 1px solid var(--panel-border); font-weight: 600;" title="발행하지 않고 후보 글과 생성될 답글만 콘솔에 출력합니다">
+              <span>🧪 피드 답글 미리보기</span>
+            </button>
+            <button class="btn-primary-action" id="btnRunFeedRapport" style="background: linear-gradient(135deg, #0d9488 0%, #14b8a6 100%); font-weight: 600;">
+              <span>💬 팔로잉 피드 답글 달기 (10건)</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="dashboard-scroll-content">
+          <!-- 상단 4단 통계 카드 (기존 KPI 카드 스타일과 100% 동일한 그리드) -->
+          <div class="kpi-grid" style="margin-bottom: 20px;">
+            <div class="kpi-card">
+              <div class="kpi-header">
+                <span class="kpi-title">오늘 등록 댓글</span>
+                <span class="kpi-icon blue">💬</span>
+              </div>
+              <div class="kpi-body">
+                <div class="kpi-num"><span id="todayCommentsCount">0</span> <small>/ 10건</small></div>
+                <div class="kpi-bar-wrapper">
+                  <div class="kpi-bar-fill blue" id="commentProgressFill" style="width: 0%"></div>
+                </div>
+                <div class="kpi-hint">내 게시물 인바운드 AI 답글 일일 상한</div>
+              </div>
+            </div>
+
+            <div class="kpi-card">
+              <div class="kpi-header">
+                <span class="kpi-title">오늘 누른 하트(좋아요)</span>
+                <span class="kpi-icon pink" style="background: rgba(244, 63, 94, 0.2); color: #fb7185;">❤️</span>
+              </div>
+              <div class="kpi-body">
+                <div class="kpi-num"><span id="todayCommentHeartsCount">0</span> <small>/ 300건</small></div>
+                <div class="kpi-bar-wrapper">
+                  <div class="kpi-bar-fill pink" id="commentHeartProgressFill" style="width: 0%; background: linear-gradient(90deg, #f43f5e, #ec4899);"></div>
+                </div>
+                <div class="kpi-hint">피드 하트 + 소통 하트 통합 집계</div>
+              </div>
+            </div>
+
+            <div class="kpi-card">
+              <div class="kpi-header">
+                <span class="kpi-title">오늘 피드 답글(아웃바운드)</span>
+                <span class="kpi-icon" style="background: rgba(20, 184, 166, 0.2); color: #2dd4bf;">💬</span>
+              </div>
+              <div class="kpi-body">
+                <div class="kpi-num"><span id="todayOutboundCount">0</span> <small>/ 10건</small></div>
+                <div class="kpi-bar-wrapper">
+                  <div class="kpi-bar-fill" id="outboundProgressFill" style="width: 0%; background: linear-gradient(90deg, #0d9488, #2dd4bf);"></div>
+                </div>
+                <div class="kpi-hint">팔로잉 피드에 먼저 거는 답글 · 인바운드와 별도 한도</div>
+              </div>
+            </div>
+
+            <div class="kpi-card">
+              <div class="kpi-header">
+                <span class="kpi-title">총 누적 소통 댓글</span>
+                <span class="kpi-icon purple">📚</span>
+              </div>
+              <div class="kpi-body">
+                <div class="kpi-num" id="totalCommentsCount">0 <small>건</small></div>
+                <div class="kpi-bar-wrapper">
+                  <div class="kpi-bar-fill purple" style="width: 100%"></div>
+                </div>
+                <div class="kpi-hint">기록된 전체 AI 라포 댓글</div>
+              </div>
+            </div>
+
+            <div class="kpi-card">
+              <div class="kpi-header">
+                <span class="kpi-title">안전 응답 대상</span>
+                <span class="kpi-icon green">🤝</span>
+              </div>
+              <div class="kpi-body">
+                <div class="kpi-num" style="color: #34d399;">미응답 <small>댓글</small></div>
+                <div class="kpi-bar-wrapper">
+                  <div class="kpi-bar-fill green" style="width: 100%"></div>
+                </div>
+                <div class="kpi-hint">내 글 직계 댓글·내 답글에 온 후속 댓글</div>
+              </div>
+            </div>
+
+            <div class="kpi-card">
+              <div class="kpi-header">
+                <span class="kpi-title">안티봇 딜레이 쉴드</span>
+                <span class="kpi-icon orange">🛡️</span>
+              </div>
+              <div class="kpi-body">
+                <div class="kpi-num" style="font-size: 1.4rem;">60~180초</div>
+                <div class="kpi-bar-wrapper">
+                  <div class="kpi-bar-fill orange" style="width: 100%"></div>
+                </div>
+                <div class="kpi-hint">건당 공식 API 안전 쿨다운</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 스마트 전략 팁 & 계획서 바로가기 바 -->
+          <div style="background: rgba(56, 189, 248, 0.05); border: 1px solid rgba(56, 189, 248, 0.2); border-radius: 8px; padding: 12px 18px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center;">
+            <div style="font-size: 0.85rem; color: #cbd5e1;">
+              💡 <strong>현재 권한 활용:</strong> 최근 내 최상위 게시물의 공식 대화 목록에서 <strong>내가 아직 답하지 않은 댓글만</strong> 대상으로 합니다. 수동 기응답, 타인끼리의 대화, 숨김·중복·민감·홍보성 댓글은 제외하며 1회 1~3건·하루 최대 10건만 실행합니다.
+            </div>
+            <a href="COMMENT_STRATEGY_PLAN.html" target="_blank" class="btn-secondary-action" style="font-size: 0.8rem; padding: 4px 10px; text-decoration: none; white-space: nowrap; margin-left: 12px;">
+              📑 상세 전략서
+            </a>
+          </div>
+
+          <!-- 실시간 댓글 내역 관리 카드 -->
+          <div class="settings-card" style="margin-bottom: 40px;">
+            <div class="settings-card-header" style="display: flex; justify-content: space-between; align-items: center;">
+              <div>
+                <h3 style="display: flex; align-items: center; gap: 8px;">
+                  <span>📜 내 게시물 인바운드 AI 답글 내역</span>
+                  <span class="badge" id="commentsTableBadge" style="background: rgba(56, 189, 248, 0.2); color: #38bdf8; font-size: 0.75rem; padding: 2px 8px; border-radius: 9999px;">0건</span>
+                </h3>
+                <p>내 게시물에 들어온 상대방 댓글과 공식 API로 발행·검증된 맞춤 답글 기록입니다.</p>
+              </div>
+              <button class="btn-secondary-action" id="btnRefreshComments" style="font-size: 0.82rem; padding: 6px 12px;">🔄 새로고침</button>
+            </div>
+
+            <div class="settings-card-body" style="padding: 0; overflow-x: auto;">
+              <table class="comments-table">
+                <thead>
+                  <tr style="border-bottom: 1px solid var(--panel-border); background: rgba(0,0,0,0.2); color: var(--text-muted); font-size: 0.8rem;">
+                    <th style="padding: 12px 16px; width: 80px;">시간</th>
+                    <th style="padding: 12px 16px; width: 140px;">대상 유저</th>
+                    <th style="padding: 12px 16px; width: 32%;">상대방 댓글 요약</th>
+                    <th style="padding: 12px 16px;">내가 남긴 AI 답글</th>
+                    <th style="padding: 12px 16px; width: 100px; text-align: center;">상태</th>
+                  </tr>
+                </thead>
+                <tbody id="commentsTableBody">
+                  <tr>
+                    <td colspan="5" style="text-align: center; padding: 40px; color: var(--text-muted);">
+                      댓글 기록을 불러오는 중입니다...
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- 3. 일렉트론 하단 상태 표시줄 (Status Bar) -->
+  <footer class="app-statusbar">
+    <div class="status-left">
+      <span class="status-item"><span class="status-dot green"></span> 데스크톱 서버 3500 포트 온라인</span>
+      <span class="status-sep">|</span>
+      <span class="status-item" id="barRunningStatus">봇 상태: 대기 중</span>
+    </div>
+    <div class="status-right">
+      <span class="status-item">오늘 맞팔: <strong id="barFollowCount">0</strong> / 40</span>
+      <span class="status-sep">|</span>
+      <span class="status-item">오늘 댓글: <strong id="barCommentCount">0</strong> / 10</span>
+      <span class="status-sep">|</span>
+      <span class="status-item">오늘 핫딜: <strong id="barPostCount">0</strong> / 5</span>
+      <span class="status-sep">|</span>
+      <span class="status-item">Threads Affiliate Studio v1.5.3</span>
+    </div>
+  </footer>
+
+  <!-- 카드 수정 모달 다이얼로그 -->
+  <div class="modal-overlay" id="editModal" style="display: none;">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 id="modalCardTitle">스레드 포스팅 카드 문구 수정</h3>
+        <button class="modal-close-btn" id="btnModalClose" aria-label="닫기">✕</button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="editCardId">
+        <div class="form-item">
+          <label>스타일 태그</label>
+          <input type="text" id="editCardTag">
+        </div>
+        <div class="form-item">
+          <label>스레드 본문 내용</label>
+          <textarea id="editCardBody" rows="6"></textarea>
+        </div>
+        <div class="form-item">
+          <label>라포 답글 (게시 발행과 분리된 공식 API 서비스)</label>
+          <textarea id="editCardComment" rows="3" disabled placeholder="최상위 본문 1건만 발행됩니다."></textarea>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-secondary-action" id="btnModalCancel">취소</button>
+        <button class="btn-primary-action" id="btnModalSave">저장하기</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 이미지 확대 미리보기 라이트박스 모달 -->
+  <div class="pub-lightbox-overlay" id="pubImageModal" hidden>
+    <div class="pub-lightbox-content">
+      <button class="pub-lightbox-close" id="btnPubLightboxClose" title="닫기 (ESC)" aria-label="닫기 (ESC)">✕</button>
+      <img src="" alt="확대 미리보기" class="pub-lightbox-img" id="pubLightboxImg">
+      <div class="pub-lightbox-caption" id="pubLightboxCaption">스레드 4:5 고화질 카드 프리뷰</div>
+    </div>
+  </div>
+
+  <!-- 모바일 전용 하단 바텀 탭 네비게이션 (iOS Safe Area 대응) -->
+  <nav class="app-bottom-nav" id="appBottomNav">
+    <button class="bottom-nav-item active" data-page="page-dashboard">
+      <span class="bottom-nav-icon">📊</span>
+      <span class="bottom-nav-label">대시보드</span>
+    </button>
+    <button class="bottom-nav-item" data-page="page-publish">
+      <span class="bottom-nav-icon">✍️</span>
+      <span class="bottom-nav-label">게시물발행</span>
+    </button>
+    <button class="bottom-nav-item" data-page="page-trends">
+      <span class="bottom-nav-icon">🔎</span>
+      <span class="bottom-nav-label">시장조사</span>
+    </button>
+    <button class="bottom-nav-item" data-page="page-comments">
+      <span class="bottom-nav-icon">💬</span>
+      <span class="bottom-nav-label">댓글소통</span>
+    </button>
+    <button class="bottom-nav-item" id="mobMenuBtn" type="button" aria-label="전체 메뉴 열기" aria-expanded="false">
+      <span class="bottom-nav-icon">☰</span>
+      <span class="bottom-nav-label">전체메뉴</span>
+    </button>
+  </nav>
+
+  <!-- 모바일 사이드바 드로어 백드롭 -->
+  <div class="mobile-drawer-backdrop" id="mobDrawerBackdrop"></div>
+
+  <!-- 운영 대시보드 관리자 로그인 -->
+  <div class="auth-gate" id="authGate" hidden>
+    <form class="auth-card" id="authLoginForm">
+      <span class="auth-mark">@</span>
+      <h2>관리자 로그인</h2>
+      <p>게시물 발행과 계정 설정을 보호하기 위해 관리자 인증이 필요합니다.</p>
+      <label for="authPassword">관리자 비밀번호</label>
+      <input id="authPassword" type="password" autocomplete="current-password" required maxlength="200" placeholder="비밀번호 입력">
+      <div class="auth-error" id="authError" role="alert" hidden></div>
+      <button type="submit" id="authSubmit">안전하게 로그인</button>
+    </form>
+  </div>
+
+  <script src="i18n.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,19 @@
+#!/usr/bin/env sh
+# 커밋 대상에 자격증명 또는 환경 파일이 섞이는 것을 차단한다.
+set -eu
+
+staged_files="$(git diff --cached --name-only --diff-filter=ACMR)"
+
+restricted_files="$(printf '%s\n' "$staged_files" | grep -Ei '(^|/)(\.env($|\.)|.*\.(pem|key)$|storage_state\.json|\.toss_token\.json$)' | grep -Eiv '(^|/)\.env\.example$' || true)"
+
+if [ -n "$restricted_files" ]; then
+  echo '차단: 환경 파일 또는 자격증명 파일은 커밋할 수 없습니다.' >&2
+  exit 1
+fi
+
+if ! git diff --cached --text -- . ':(exclude).githooks/pre-commit' | grep -Eiq '(AIza[0-9A-Za-z_-]{20,}|AQ\.[0-9A-Za-z_-]{20,}|AKIA[0-9A-Z]{16}|sk-[A-Za-z0-9_-]{20,}|AccountKey=|BEGIN (RSA |OPENSSH |EC )?PRIVATE KEY)'; then
+  exit 0
+fi
+
+echo '차단: 스테이징된 변경에서 자격증명 형식이 감지되었습니다. 키를 폐기·회전하고 제거하세요.' >&2
+exit 1

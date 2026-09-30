@@ -1,0 +1,12 @@
+[
+  {
+    "id": "cmt_sample_001",
+    "timestamp": "2026-09-30T10:00:00.000Z",
+    "targetUser": "sample_user",
+    "targetPostSnippet": "오늘 날씨가 정말 화창하네요! 다들 좋은 하루 보내세요.",
+    "keyword": "일상/소통",
+    "generatedComment": "오늘 하늘이 정말 맑네요 ✨ 기분 좋은 하루 보내세요!",
+    "category": "일상 공감형",
+    "status": "SUCCESS"
+  }
+]
