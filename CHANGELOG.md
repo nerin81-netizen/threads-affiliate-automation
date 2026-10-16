@@ -1,6 +1,10 @@
 # 업데이트 히스토리
 최신 항목이 위로 오도록 기록. 형식: ## YYYY-MM-DD 아래 무엇을/왜 바꿨는지 1~3줄.
 
+## 2026-10-16
+- **Git 이력 내 민감정보 영구 제거**:
+  - 과거 커밋에 포함되어 있던 세션 쿠키(`storage_state.json`), 브라우저 프로필(`threads_profile/`), Meta 테스트 토큰 캡처(`guide_assets/step11_generate_token_ready.png`, `step12_token_generated.png`)를 Git 이력 전체에서 완전히 제거 및 GitHub 원격(`origin/main`)에 강제 푸시 완료.
+
 ## 2026-09-30 (v1.0.0 Open Source Public Release)
 - **글로벌 8개국어 다국어화(i18n) 및 실시간 번역 엔진 탑재**:
   - 브라우저 언어 자동 감지 및 원클릭 언어 선택기(한국어, 영어, 일본어, 중국어, 스페인어, 독일어, 프랑스어, 포르투갈어) 탑재(`public/i18n.js`).
