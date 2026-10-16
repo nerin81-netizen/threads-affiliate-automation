@@ -2,6 +2,8 @@
 
 KI-gestützte All-in-One-Automatisierungsplattform für Threads-Affiliate-Marketing und organische Beziehungsbildung (Rapport).
 
+> 💡 **Hinweis**: Für KI-gestützte personalisierte Kommentare und Kartengenerierung ist ein **Google Gemini API Key** (kostenlose Stufe verfügbar) erforderlich. Grundlegende Follow- und Posting-Funktionen funktionieren auch ohne API-Schlüssel.
+
 ---
 
 ### 🌐 Sprachen / Languages
@@ -65,6 +67,7 @@ KI-gestützte All-in-One-Automatisierungsplattform für Threads-Affiliate-Market
 ### 1. Voraussetzungen
 - Node.js 18 oder höher
 - Google Chrome Browser
+- **Google Gemini API Key** (Kostenlos erhältlich im [Google AI Studio](https://aistudio.google.com/))
 
 ### 2. Klonen & Installieren
 ```bash

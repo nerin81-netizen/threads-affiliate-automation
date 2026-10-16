@@ -2,6 +2,8 @@
 
 AI 기반 스레드(Threads) 제휴 마케팅 및 자동 소통(라포 형성) 올인원 자동화 플랫폼입니다.
 
+> 💡 **안내**: AI 맞춤 댓글 및 카드 이미지 생성 기능을 활용하려면 **Google Gemini API Key**(무료 티어 이용 가능)가 필요합니다. 맞팔 늘리기 및 단순 핫딜 포스팅은 API 키 없이도 실행 가능합니다.
+
 ---
 
 ### 🌐 Languages / 다국어 지원
@@ -67,6 +69,7 @@ AI 기반 스레드(Threads) 제휴 마케팅 및 자동 소통(라포 형성) �
 ### 1. 사전 요구사항
 - Node.js 18 이상
 - Google Chrome 브라우저
+- **Google Gemini API Key** ([Google AI Studio](https://aistudio.google.com/)에서 무료 발급 가능)
 
 ### 2. 저장소 클론 및 패키지 설치
 ```bash

@@ -2,6 +2,8 @@
 
 AIを活用したThreads(スレッズ)アフィリエイトマーケティング＆オーガニック交流（ラポール形成）オールインワン自動化プラットフォームです。
 
+> 💡 **案内**: AIカスタムコメント生成およびカード画像生成機能を利用するには、**Google Gemini API Key**（無料枠あり）が必要です。フォロワー増加および基本的な投稿機能はAPIキーなしでも利用可能です。
+
 ---
 
 ### 🌐 言語 / Languages
@@ -65,6 +67,7 @@ AIを活用したThreads(スレッズ)アフィリエイトマーケティング
 ### 1. 必要要件
 - Node.js 18以上
 - Google Chrome ブラウザ
+- **Google Gemini API Key**（[Google AI Studio](https://aistudio.google.com/)にて無料で取得可能）
 
 ### 2. インストール
 ```bash

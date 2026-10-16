@@ -2,6 +2,8 @@
 
 Plataforma completa impulsionada por IA para marketing de afiliados e engajamento orgânico (rapport) no Threads.
 
+> 💡 **Aviso**: É necessária uma chave **Google Gemini API Key** (camada gratuita disponível) para utilizar os comentários personalizados com IA e a geração de imagens de cartões. O crescimento básico de seguidores e publicações funcionam sem chave API.
+
 ---
 
 ### 🌐 Idiomas / Languages
@@ -65,6 +67,7 @@ Plataforma completa impulsionada por IA para marketing de afiliados e engajament
 ### 1. Pré-requisitos
 - Node.js 18 ou superior
 - Navegador Google Chrome
+- **Google Gemini API Key** (Pode ser obtida gratuitamente no [Google AI Studio](https://aistudio.google.com/))
 
 ### 2. Instalação
 ```bash
