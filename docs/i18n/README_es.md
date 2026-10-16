@@ -5,7 +5,7 @@ Plataforma integral basada en IA para marketing de afiliados e interacción org�
 ---
 
 ### 🌐 Idiomas / Languages
-[ 🇰🇷 한국어 ](../../README.md) | [ 🇺🇸 English ](README_en.md) | [ 🇯🇵 日本語 ](README_ja.md) | [ 🇨🇳 简体中文 ](README_zh.md) | [ 🇪🇸 Español ] | [ 🇩🇪 Deutsch ](README_de.md) | [ 🇫🇷 Français ](README_fr.md) | [ 🇧🇷 Português ](README_pt.md)
+[ 🇰🇷 한국어 ](README_ko.md) | [ 🇺🇸 English ](README_en.md) | [ 🇯🇵 日本語 ](README_ja.md) | [ 🇨🇳 简体中文 ](README_zh.md) | [ 🇪🇸 Español ] | [ 🇩🇪 Deutsch ](README_de.md) | [ 🇫🇷 Français ](README_fr.md) | [ 🇧🇷 Português ](README_pt.md)
 
 ---
 

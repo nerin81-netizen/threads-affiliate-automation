@@ -5,7 +5,7 @@ AIを活用したThreads(スレッズ)アフィリエイトマーケティング
 ---
 
 ### 🌐 言語 / Languages
-[ 🇰🇷 한국어 ](../../README.md) | [ 🇺🇸 English ](README_en.md) | [ 🇯🇵 日本語 ] | [ 🇨🇳 简体中文 ](README_zh.md) | [ 🇪🇸 Español ](README_es.md) | [ 🇩🇪 Deutsch ](README_de.md) | [ 🇫🇷 Français ](README_fr.md) | [ 🇧🇷 Português ](README_pt.md)
+[ 🇰🇷 한국어 ](README_ko.md) | [ 🇺🇸 English ](README_en.md) | [ 🇯🇵 日本語 ] | [ 🇨🇳 简体中文 ](README_zh.md) | [ 🇪🇸 Español ](README_es.md) | [ 🇩🇪 Deutsch ](README_de.md) | [ 🇫🇷 Français ](README_fr.md) | [ 🇧🇷 Português ](README_pt.md)
 
 ---
 

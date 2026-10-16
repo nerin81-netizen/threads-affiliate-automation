@@ -4,7 +4,7 @@ An open-source toolkit for creating and managing Threads affiliate content. Use 
 
 > New here? See the screenshots, then follow [Quick Start](#quick-start). Review every post and reply before publishing. Follow Threads' current Terms and API policies. Activity limits do not guarantee protection from account restrictions.
 
-[English](#) · [日本語](docs/i18n/README_ja.md) · [简体中文](docs/i18n/README_zh.md) · [Español](docs/i18n/README_es.md) · [Deutsch](docs/i18n/README_de.md) · [Français](docs/i18n/README_fr.md) · [Português](docs/i18n/README_pt.md)
+[한국어](docs/i18n/README_ko.md) · [English](#) · [日本語](docs/i18n/README_ja.md) · [简体中文](docs/i18n/README_zh.md) · [Español](docs/i18n/README_es.md) · [Deutsch](docs/i18n/README_de.md) · [Français](docs/i18n/README_fr.md) · [Português](docs/i18n/README_pt.md)
 
 ## Preview
 
