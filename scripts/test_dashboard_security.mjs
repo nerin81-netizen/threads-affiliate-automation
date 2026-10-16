@@ -1,8 +1,9 @@
-﻿import assert from 'node:assert/strict';
+import assert from 'node:assert/strict';
 import { spawn } from 'node:child_process';
 import net from 'node:net';
 import fs from 'node:fs';
 import path from 'node:path';
+import crypto from 'node:crypto';
 import { fileURLToPath } from 'node:url';
 
 const rootDir = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
@@ -75,13 +76,17 @@ assert.match(envExample, /DASHBOARD_ADMIN_PASSWORD/, '.env.example에 관리자 
 
 const runCase = async () => {
   const port = await getFreePort();
-  const password = 'dummy_test_token';
+  const dynamicTestSecret = crypto.randomBytes(32).toString('hex');
+  const guidePath = path.join(rootDir, 'INDEX_GUIDE.html');
+  const createdGuide = !fs.existsSync(guidePath);
+  if (createdGuide) fs.writeFileSync(guidePath, '<!doctype html><html><body>guide</body></html>', 'utf8');
 
-  await withServer({
-    PORT: String(port),
-    DASHBOARD_ADMIN_PASSWORD: password,
-    DASHBOARD_PUBLIC_ORIGIN: `http://127.0.0.1:${port}`
-  }, async (baseUrl, getStderr) => {
+  try {
+    await withServer({
+      PORT: String(port),
+      DASHBOARD_ADMIN_PASSWORD: dynamicTestSecret,
+      DASHBOARD_PUBLIC_ORIGIN: `http://127.0.0.1:${port}`
+    }, async (baseUrl, getStderr) => {
     const get = async (p, headers = {}) => {
       const res = await fetch(`${baseUrl}${p}`, { headers, redirect: 'manual' });
       const text = await res.text();
@@ -116,14 +121,14 @@ const runCase = async () => {
     const badLogin = await fetch(`${baseUrl}/api/auth/login`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', Origin: `http://127.0.0.1:${port}` },
-      body: JSON.stringify({ password: 'wrong' })
+      body: JSON.stringify({ password: 'invalid_' + crypto.randomBytes(8).toString('hex') })
     });
     assert.equal(badLogin.status, 401, '잘못된 비밀번호는 401이어야 합니다.');
 
     const goodLogin = await fetch(`${baseUrl}/api/auth/login`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', Origin: `http://127.0.0.1:${port}` },
-      body: JSON.stringify({ password })
+      body: JSON.stringify({ password: dynamicTestSecret })
     });
     assert.equal(goodLogin.status, 200, `올바른 로그인이 200이 아닙니다.\n${getStderr()}`);
     const setCookie = goodLogin.headers.get('set-cookie') || '';
@@ -162,7 +167,7 @@ const runCase = async () => {
       const res = await fetch(`${baseUrl}/api/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', Origin: `http://127.0.0.1:${port}` },
-        body: JSON.stringify({ password: 'wrong' })
+        body: JSON.stringify({ password: 'invalid_' + crypto.randomBytes(8).toString('hex') })
       });
       if (res.status === 429) { sawRateLimit = true; break; }
     }
@@ -187,6 +192,11 @@ const runCase = async () => {
     });
     assert.equal(spoofedLocal.status, 503, 'X-Forwarded-For 위조로 로컬 우회가 허용됩니다.');
   });
+  } finally {
+    if (createdGuide && fs.existsSync(guidePath)) {
+      try { fs.unlinkSync(guidePath); } catch {}
+    }
+  }
 };
 
 await runCase();
