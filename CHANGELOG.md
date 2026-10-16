@@ -2,6 +2,9 @@
 최신 항목이 위로 오도록 기록. 형식: ## YYYY-MM-DD 아래 무엇을/왜 바꿨는지 1~3줄.
 
 ## 2026-10-16
+- **테스트 코드 내 더미 비밀번호 문자열 제거 및 동적 난수화**:
+  - 보안 단위 테스트(`scripts/test_dashboard_security.mjs`)에 있던 고정 샘플 문자열을 실행 시마다 생성되는 `crypto.randomBytes` 1회용 동적 난수로 전면 교체하여 하드코딩 오해 원천 차단.
+  - `.env.example`의 `THREADS_PW` 기본값을 완전 빈칸으로 변경.
 - **글로벌 8개국어 README에 AI API 키(Google Gemini) 안내 추가**:
   - AI 맞춤 댓글 및 카드 이미지 생성 활성화를 위한 Gemini API Key 필수 안내 및 무료 발급 링크([Google AI Studio](https://aistudio.google.com/))를 8개국어 README 및 루트 README 도입부·요구사항에 일괄 반영.
 - **다국어 문서 구조 정비 및 한국어 상세 README 구축**:
