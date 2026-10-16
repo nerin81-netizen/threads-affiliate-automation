@@ -66,8 +66,14 @@ async function withServer(env, fn) {
 const serverSrc = fs.readFileSync(path.join(rootDir, 'server.mjs'), 'utf8');
 const indexSrc = fs.readFileSync(path.join(rootDir, 'public', 'index.html'), 'utf8');
 const envExample = fs.readFileSync(path.join(rootDir, '.env.example'), 'utf8');
+const threadsBotSrc = fs.readFileSync(path.join(rootDir, 'scripts', 'threads_bot.mjs'), 'utf8');
 
 assert.match(serverSrc, /DASHBOARD_ADMIN_PASSWORD/, '관리자 인증 환경변수 참조가 없습니다.');
+assert.equal(
+  /process\.env\.THREADS_PW\s*\|\|\s*['"`][^'"`]+['"`]/.test(threadsBotSrc),
+  false,
+  'THREADS_PW에 하드코딩된 비밀번호 폴백이 남아 있습니다.'
+);
 assert.match(serverSrc, /SAFE_ROOT_HTML_FILES/, '프로젝트 루트 파일 허용 목록이 없습니다.');
 assert.equal(serverSrc.includes('path.join(rootDir, pathname.replace'), false,
   '루트 파일을 임의로 정적 제공하는 기존 폴백이 남아 있습니다.');
