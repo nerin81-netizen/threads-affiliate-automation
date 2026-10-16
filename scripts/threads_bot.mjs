@@ -168,7 +168,11 @@ export async function checkLogin(page) {
 export async function tryAutoLogin(page, log = console.log) {
   dotenv.config({ path: path.join(rootDir, '.env'), override: true });
   const id = process.env.THREADS_ID || '';
-  const pw = process.env.THREADS_PW || '!!haki0527';
+  const pw = process.env.THREADS_PW;
+
+  if (!pw) {
+    throw new Error('THREADS_PW가 설정되지 않았습니다. .env 또는 안전한 실행 환경 변수를 설정하세요.');
+  }
 
   log(`🔑 스레드 계정(${id})으로 자동 로그인을 시도합니다...`);
 
