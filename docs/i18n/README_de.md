@@ -5,7 +5,7 @@ KI-gestützte All-in-One-Automatisierungsplattform für Threads-Affiliate-Market
 ---
 
 ### 🌐 Sprachen / Languages
-[ 🇰🇷 한국어 ](../../README.md) | [ 🇺🇸 English ](README_en.md) | [ 🇯🇵 日本語 ](README_ja.md) | [ 🇨🇳 简体中文 ](README_zh.md) | [ 🇪🇸 Español ](README_es.md) | [ 🇩🇪 Deutsch ] | [ 🇫🇷 Français ](README_fr.md) | [ 🇧🇷 Português ](README_pt.md)
+[ 🇰🇷 한국어 ](README_ko.md) | [ 🇺🇸 English ](README_en.md) | [ 🇯🇵 日本語 ](README_ja.md) | [ 🇨🇳 简体中文 ](README_zh.md) | [ 🇪🇸 Español ](README_es.md) | [ 🇩🇪 Deutsch ] | [ 🇫🇷 Français ](README_fr.md) | [ 🇧🇷 Português ](README_pt.md)
 
 ---
 

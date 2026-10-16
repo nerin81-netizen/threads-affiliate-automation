@@ -5,7 +5,7 @@ Plateforme tout-en-un propulsée par l'IA pour le marketing d'affiliation et l'e
 ---
 
 ### 🌐 Langues / Languages
-[ 🇰🇷 한국어 ](../../README.md) | [ 🇺🇸 English ](README_en.md) | [ 🇯🇵 日本語 ](README_ja.md) | [ 🇨🇳 简体中文 ](README_zh.md) | [ 🇪🇸 Español ](README_es.md) | [ 🇩🇪 Deutsch ](README_de.md) | [ 🇫🇷 Français ] | [ 🇧🇷 Português ](README_pt.md)
+[ 🇰🇷 한국어 ](README_ko.md) | [ 🇺🇸 English ](README_en.md) | [ 🇯🇵 日本語 ](README_ja.md) | [ 🇨🇳 简体中文 ](README_zh.md) | [ 🇪🇸 Español ](README_es.md) | [ 🇩🇪 Deutsch ](README_de.md) | [ 🇫🇷 Français ] | [ 🇧🇷 Português ](README_pt.md)
 
 ---
 
