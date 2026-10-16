@@ -2,6 +2,8 @@
 
 基于人工智能的 Threads 联盟营销与高情商互动（建立信任）一体化自动化运营平台。
 
+> 💡 **提示**: 使用 AI 定制互动评论和卡片图像生成功能需要 **Google Gemini API Key**（提供免费层级）。基础互粉增长与特惠发帖无需 API 密钥亦可正常运行。
+
 ---
 
 ### 🌐 语言选择 / Languages
@@ -65,6 +67,7 @@
 ### 1. 环境准备
 - Node.js 18 或更高版本
 - Google Chrome 浏览器
+- **Google Gemini API Key**（可在 [Google AI Studio](https://aistudio.google.com/) 免费获取）
 
 ### 2. 克隆项目与安装依赖
 ```bash

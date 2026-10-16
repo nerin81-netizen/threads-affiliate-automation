@@ -2,6 +2,8 @@
 
 Plateforme tout-en-un propulsée par l'IA pour le marketing d'affiliation et l'engagement relationnel (rapport) sur Threads.
 
+> 💡 **Remarque** : Une clé **Google Gemini API Key** (niveau gratuit disponible) est requise pour utiliser la génération de commentaires IA personnalisés et d'images de cartes. Les fonctions de base de suivi et de publication fonctionnent sans clé API.
+
 ---
 
 ### 🌐 Langues / Languages
@@ -65,6 +67,7 @@ Plateforme tout-en-un propulsée par l'IA pour le marketing d'affiliation et l'e
 ### 1. Prérequis
 - Node.js 18 ou version supérieure
 - Navigateur Google Chrome
+- **Google Gemini API Key** (Obtention gratuite sur [Google AI Studio](https://aistudio.google.com/))
 
 ### 2. Installation
 ```bash

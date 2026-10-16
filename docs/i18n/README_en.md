@@ -2,6 +2,8 @@
 
 AI-Powered All-in-One Automation Platform for Threads Affiliate Marketing and Organic Rapport Engagement.
 
+> 💡 **Notice**: A **Google Gemini API Key** (Free tier available) is required to use AI-tailored comments and card image generation features. Basic follow growth and hot-deal posting can still run without an API key.
+
 ---
 
 ### 🌐 Languages
@@ -66,6 +68,7 @@ AI-Powered All-in-One Automation Platform for Threads Affiliate Marketing and Or
 ### 1. Prerequisites
 - Node.js 18 or higher
 - Google Chrome browser
+- **Google Gemini API Key** (Free to generate at [Google AI Studio](https://aistudio.google.com/))
 
 ### 2. Clone & Install
 ```bash

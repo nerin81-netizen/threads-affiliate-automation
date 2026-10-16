@@ -4,6 +4,8 @@ An open-source toolkit for creating and managing Threads affiliate content. Use 
 
 > New here? See the screenshots, then follow [Quick Start](#quick-start). Review every post and reply before publishing. Follow Threads' current Terms and API policies. Activity limits do not guarantee protection from account restrictions.
 
+> 💡 **Notice**: A **Google Gemini API Key** (Free tier available) is required for AI-tailored comments and card image generation. Basic follow growth and hot-deal posting can run without an API key.
+
 [한국어](docs/i18n/README_ko.md) · [English](#) · [日本語](docs/i18n/README_ja.md) · [简体中文](docs/i18n/README_zh.md) · [Español](docs/i18n/README_es.md) · [Deutsch](docs/i18n/README_de.md) · [Français](docs/i18n/README_fr.md) · [Português](docs/i18n/README_pt.md)
 
 ## Preview
@@ -33,6 +35,7 @@ An open-source toolkit for creating and managing Threads affiliate content. Use 
 ### Requirements
 - Node.js 18 or later
 - Google Chrome
+- **Google Gemini API Key** (Free to generate at [Google AI Studio](https://aistudio.google.com/))
 
 ### Install and run
 
