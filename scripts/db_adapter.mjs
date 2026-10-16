@@ -18,9 +18,9 @@ dotenv.config({ path: path.join(rootDir, '.env') });
 const { Pool } = pg;
 
 // 1. PostgreSQL 설정
-const PG_HOST = process.env.PGHOST || 'your-postgres-host.postgres.database.azure.com';
-const PG_USER = process.env.PGUSER || 'your_postgres_user';
-const PG_DB = process.env.PGDATABASE || 'prompt_daily';
+const PG_HOST = process.env.PGHOST || '';
+const PG_USER = process.env.PGUSER || '';
+const PG_DB = process.env.PGDATABASE || '';
 const PG_PASSWORD = process.env.PGPASSWORD || '';
 const PG_PORT = parseInt(process.env.PGPORT || '5432', 10);
 
@@ -29,7 +29,7 @@ let isPgConnected = false;
 
 // 2. Azure Blob Storage 설정
 // 연결문자열은 .env(AZURE_STORAGE_CONNECTION_STRING)에서만 읽는다.
-// 소스에 키를 두지 않는다 — Key Vault: your-key-vault-name / AZURE-STORAGE-CONNECTION-STRING
+// 소스에 키를 두지 않는다 — Key Vault 또는 .env(AZURE_STORAGE_CONNECTION_STRING)에서 주입
 const STORAGE_CONN_STR = process.env.AZURE_STORAGE_CONNECTION_STRING || '';
 const CONTAINER_NAME = process.env.AZURE_STORAGE_CONTAINER || 'threads-media';
 

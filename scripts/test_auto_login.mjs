@@ -53,7 +53,7 @@ async function main() {
 
   if (await usernameInput.isVisible({ timeout: 4000 }).catch(() => false)) {
     console.log('Typing credentials...');
-    await usernameInput.fill(id); // test_creator 먼저 입력
+    await usernameInput.fill(id);
     await page.waitForTimeout(500);
     await passwordInput.fill(pw);
     await page.waitForTimeout(800);

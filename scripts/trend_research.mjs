@@ -2,7 +2,7 @@ import { execFile } from 'child_process';
 import { promisify } from 'util';
 
 const execFileAsync = promisify(execFile);
-const KEY_VAULT_NAME = process.env.AZURE_KEY_VAULT_NAME || 'your-key-vault-name';
+const KEY_VAULT_NAME = process.env.AZURE_KEY_VAULT_NAME || '';
 const secretCache = new Map();
 
 function decodeXml(value = '') {
@@ -32,6 +32,7 @@ function trafficToNumber(value = '') {
 async function getSecret(secretName, envName) {
   if (process.env[envName]) return process.env[envName];
   if (secretCache.has(secretName)) return secretCache.get(secretName);
+  if (!KEY_VAULT_NAME) return '';
 
   const azureCli = process.platform === 'win32' ? 'az.cmd' : 'az';
   const { stdout } = await execFileAsync(azureCli, [

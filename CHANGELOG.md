@@ -2,8 +2,9 @@
 최신 항목이 위로 오도록 기록. 형식: ## YYYY-MM-DD 아래 무엇을/왜 바꿨는지 1~3줄.
 
 ## 2026-10-16
-- **Git 이력 내 민감정보 영구 제거**:
-  - 과거 커밋에 포함되어 있던 세션 쿠키(`storage_state.json`), 브라우저 프로필(`threads_profile/`), Meta 테스트 토큰 캡처(`guide_assets/step11_generate_token_ready.png`, `step12_token_generated.png`)를 Git 이력 전체에서 완전히 제거 및 GitHub 원격(`origin/main`)에 강제 푸시 완료.
+- **오픈소스 공개를 위한 개인정보 및 인프라 식별자 전면 소각**:
+  - 소스코드 및 환경설정 예시 내 하드코딩된 계정 ID, 클라우드 DB 호스트 주소, Key Vault 이름 및 DB 관리자 계정 전면 제거 및 플레이스홀더화.
+  - 과거 커밋 이력 전체에서 세션 쿠키, 브라우저 프로필, Meta 토큰 캡처 이미지 영구 제거 및 GitHub 원격(`origin/main`) 강제 푸시 완료.
 
 ## 2026-09-30 (v1.0.0 Open Source Public Release)
 - **글로벌 8개국어 다국어화(i18n) 및 실시간 번역 엔진 탑재**:
